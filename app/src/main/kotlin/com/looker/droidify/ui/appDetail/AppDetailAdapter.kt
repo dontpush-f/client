@@ -921,7 +921,16 @@ class AppDetailAdapter(private val callbacks: Callbacks) :
             items += Item.TextItem(TextType.ANTI_FEATURES, antiFeatures)
         }
 
-        val changes = productRepository.first.whatsNew
+        val changes = formatHtml(productRepository.first.whatsNew) { url ->
+    val uri = try {
+        url.toUri()
+    } catch (_: Exception) {
+        null
+    }
+    if (uri != null) {
+        callbacks.onUriClick(uri, true)
+    }
+        }
         if (changes.isNotEmpty()) {
             items += Item.SectionItem(SectionType.CHANGES)
             val cropped =
